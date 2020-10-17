@@ -26,7 +26,4 @@ public abstract class AudioData {
     public final int getLength() {
         return length;
     }
-
-    public abstract <T> void getData(T[] type);
-    public abstract <T> void setData(T[] data);
 }
