@@ -1,9 +1,9 @@
 package me.scidev5.modularProceduralAudioTests.nodes.dataTypes;
 
-public class AudioIntData extends AudioData {
+public class IntData extends AudioData {
     private int[] data = null;
 
-    protected AudioIntData(int length) {
+    public IntData(int length) {
         super(length);
     }
 

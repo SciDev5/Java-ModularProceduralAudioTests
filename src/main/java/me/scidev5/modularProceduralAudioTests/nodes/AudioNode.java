@@ -6,7 +6,7 @@ import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioData;
 public abstract class AudioNode {
 
     protected final AudioPlayerThread context;
-    protected int sampleNumber = 0;
+    protected long sampleNumber = 0;
     private int executionIndex = AudioPlayerThread.executionIDResetValue;
 
     private boolean executing = false;
@@ -16,6 +16,9 @@ public abstract class AudioNode {
     protected final AudioData[] inputData = new AudioData[getNumInputs()];
     protected final AudioData[] outputData = new AudioData[getNumOutputs()];
 
+    public abstract String getName();
+    public abstract String[] getInputNames();
+    public abstract String[] getOutputNames();
     public abstract Class<? extends AudioData>[] getInputTypes();
     public abstract Class<? extends AudioData>[] getOutputTypes();
     public final int getNumInputs() {
@@ -37,13 +40,17 @@ public abstract class AudioNode {
     protected final void setInput(int index, AudioData data) {
         if (index >= inputData.length || index < 0) return;
         if (data == null) throw new IllegalArgumentException("AudioData given is null.");
-        if (getInputTypes()[index].isInstance(data))
+        if (!getInputTypes()[index].isInstance(data))
             throw new IllegalArgumentException("Data type for given AudioData does not match required type.");
-        outputData[index] = data;
+        inputData[index] = data;
     }
-    public final void connect(int thisInputIndex, AudioNode other, int otherOutputIndex) {
-        this.children[thisInputIndex] = other;
-        this.setInput(thisInputIndex, other.getOutput(otherOutputIndex));
+    public final void connect(int thisInI, AudioNode other, int otherOutI) {
+        this.children[thisInI] = other;
+        this.setInput(thisInI, other.getOutput(otherOutI));
+    }
+    public final void connectConst(int thisInI, AudioData data) {
+        this.children[thisInI] = null;
+        this.setInput(thisInI, data);
     }
 
     public final void reset(int sampleNumber) {
@@ -59,6 +66,7 @@ public abstract class AudioNode {
                 child.reset(sampleNumber);
         this.resetting = false;
     }
+    protected void resetInternal(int sampleNumber) {};
 
     public final void execute() {
         if (this.executing)
@@ -68,6 +76,8 @@ public abstract class AudioNode {
         this.executionIndex = this.context.getExecutionID();
         this.executing = true;
         this.executeChildren();
+        for (AudioData data : outputData)
+            data.setLength(context.getChunkLength());
         this.internalExecute();
         this.sampleNumber += context.getChunkLength();
         this.executing = false;

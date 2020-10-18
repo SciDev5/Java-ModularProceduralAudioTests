@@ -2,12 +2,9 @@ package me.scidev5.modularProceduralAudioTests;
 
 import me.scidev5.modularProceduralAudioTests.nodes.AudioNode;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioData;
-import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioFloatStereoData;
+import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatStereoData;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -32,7 +29,7 @@ public class AudioPlayerThread extends Thread {
 
     @Override
     public void run() {
-        AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,48000f,16,2,4,48000f,false);
+        AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,getSampleRate(),16,2,4,getSampleRate(),false);
         if (sdl != null) throw new IllegalStateException("SDL already created!");
         try {
             sdl = AudioSystem.getSourceDataLine(audioFormat);
@@ -42,6 +39,7 @@ public class AudioPlayerThread extends Thread {
             return;
         }
         sdl.start();
+        int startAvailability = sdl.available();
         try {
             while (true) {
                 int len = getChunkLength();
@@ -57,16 +55,14 @@ public class AudioPlayerThread extends Thread {
                 sdl.write(buffer.array(),0,len*4);
 
                 try { // I am sorry there is no better way to do this.
-                    while (sdl.available() <= getChunkLength() * 4) {
+                    while (startAvailability-sdl.available() > 5 * getChunkLength() * 4) {
                         Thread.sleep(10);
                     }
                 } catch (InterruptedException e) {
-                    System.out.println("interrupted.");
                     break;
                 }
             }
         }  finally {
-            System.out.println("stopping.");
             sdl.stop();
             sdl.close();
         }
@@ -77,12 +73,16 @@ public class AudioPlayerThread extends Thread {
         destination.execute();
     }
 
+
+    // ----- GETTERS ----- //
     public int getChunkLength() {
         return 512;
     }
-
     public int getExecutionID() {
         return executionID;
+    }
+    public float getSampleRate() {
+        return 48000f;
     }
 
 
@@ -98,8 +98,23 @@ public class AudioPlayerThread extends Thread {
         }
 
         @Override
+        public String getName() {
+            return "Destination [48khz]";
+        }
+
+        @Override
+        public String[] getInputNames() {
+            return new String[] { "Stereo" };
+        }
+
+        @Override
+        public String[] getOutputNames() {
+            return new String[0];
+        }
+
+        @Override
         public Class<? extends AudioData>[] getInputTypes() {
-            return new Class[] { AudioFloatStereoData.class };
+            return new Class[] { FloatStereoData.class };
         }
 
         @Override
@@ -117,7 +132,7 @@ public class AudioPlayerThread extends Thread {
             final int len = context.getChunkLength();
             float[] dataL = new float[len];
             float[] dataR = new float[len];
-            AudioFloatStereoData input = (AudioFloatStereoData) inputData[0];
+            FloatStereoData input = (FloatStereoData) inputData[0];
             if (input == null) {
                 for (int i = 0; i < len; i++) {
                     outBufferL.add(i, 0f);
