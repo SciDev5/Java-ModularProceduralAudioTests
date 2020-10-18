@@ -1,9 +1,9 @@
 package me.scidev5.modularProceduralAudioTests.nodes.dataTypes;
 
-public class AudioFloatData extends AudioData {
+public class FloatData extends AudioData {
     private float[] data = null;
 
-    protected AudioFloatData(int length) {
+    public FloatData(int length) {
         super(length);
     }
 
