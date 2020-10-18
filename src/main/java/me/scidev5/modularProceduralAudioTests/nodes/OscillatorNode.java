@@ -14,7 +14,7 @@ public class OscillatorNode extends AudioNode {
 
     @Override
     public String getName() {
-        return "Stereo Oscillator";
+        return "Oscillator";
     }
 
     @Override
