@@ -1,7 +1,5 @@
 package me.scidev5.modularProceduralAudioTests.nodes.dataTypes;
 
-import me.scidev5.modularProceduralAudioTests.AudioPlayerThread;
-
 import java.util.Arrays;
 
 public class FloatConstData extends FloatData {

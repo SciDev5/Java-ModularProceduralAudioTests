@@ -13,6 +13,11 @@ public class IntData extends AudioData {
         data = new int[length];
     }
 
+    @Override
+    public boolean ofType(String id) {
+        return AudioData.INT_ID.equals(id);
+    }
+
     public int[] getData(int[] dataOut) {
         if (dataOut.length != getLength()) throw new IllegalArgumentException("data length mismatch");
         System.arraycopy(data,0,dataOut,0,getLength());

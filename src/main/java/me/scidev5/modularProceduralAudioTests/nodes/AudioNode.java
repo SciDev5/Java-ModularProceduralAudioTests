@@ -1,11 +1,12 @@
 package me.scidev5.modularProceduralAudioTests.nodes;
 
+import me.scidev5.modularProceduralAudioTests.AudioContext;
 import me.scidev5.modularProceduralAudioTests.AudioPlayerThread;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioData;
 
 public abstract class AudioNode {
 
-    protected final AudioPlayerThread context;
+    protected final AudioContext context;
     protected long sampleNumber = 0;
     private int executionIndex = AudioPlayerThread.executionIDResetValue;
 
@@ -19,8 +20,8 @@ public abstract class AudioNode {
     public abstract String getName();
     public abstract String[] getInputNames();
     public abstract String[] getOutputNames();
-    public abstract Class<? extends AudioData>[] getInputTypes();
-    public abstract Class<? extends AudioData>[] getOutputTypes();
+    public abstract String[] getInputTypes();
+    public abstract String[] getOutputTypes();
     public final int getNumInputs() {
         Object[] dataTypes = getInputTypes();
         if (dataTypes == null) return 0;
@@ -40,7 +41,7 @@ public abstract class AudioNode {
     protected final void setInput(int index, AudioData data) {
         if (index >= inputData.length || index < 0) return;
         if (data == null) throw new IllegalArgumentException("AudioData given is null.");
-        if (!getInputTypes()[index].isInstance(data))
+        if (!data.ofType(getInputTypes()[index]))
             throw new IllegalArgumentException("Data type for given AudioData does not match required type.");
         inputData[index] = data;
     }
@@ -56,6 +57,7 @@ public abstract class AudioNode {
     public final void reset(int sampleNumber) {
         this.sampleNumber = sampleNumber;
         this.executionIndex = AudioPlayerThread.executionIDResetValue;
+        this.resetInternal(sampleNumber);
         this.resetChildren(sampleNumber);
     }
     private void resetChildren(int sampleNumber) {
@@ -66,7 +68,7 @@ public abstract class AudioNode {
                 child.reset(sampleNumber);
         this.resetting = false;
     }
-    protected void resetInternal(int sampleNumber) {};
+    protected void resetInternal(int sampleNumber) { }
 
     public final void execute() {
         if (this.executing)
@@ -89,7 +91,7 @@ public abstract class AudioNode {
     }
     protected abstract void internalExecute();
 
-    protected AudioNode(AudioPlayerThread context) {
+    protected AudioNode(AudioContext context) {
         this.context = context;
         createOutputs();
     }

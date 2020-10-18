@@ -14,6 +14,11 @@ public class FloatStereoData extends AudioData {
         dataR = new float[length];
     }
 
+    @Override
+    public boolean ofType(String id) {
+        return AudioData.FLOAT_STEREO_ID.equals(id);
+    }
+
     public void getData(float[] dataLOut, float[] dataROut) {
         if (dataLOut.length != getLength() || dataROut.length != getLength())
             throw new IllegalArgumentException("data length mismatch");

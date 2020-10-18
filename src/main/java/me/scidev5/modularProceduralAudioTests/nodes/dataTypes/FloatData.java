@@ -12,6 +12,11 @@ public class FloatData extends AudioData {
         data = new float[length];
     }
 
+    @Override
+    public boolean ofType(String id) {
+        return AudioData.FLOAT_ID.equals(id);
+    }
+
     public float[] getData(float[] dataOut) {
         if (dataOut.length != getLength()) throw new IllegalArgumentException("data length mismatch");
         System.arraycopy(data,0,dataOut,0,getLength());

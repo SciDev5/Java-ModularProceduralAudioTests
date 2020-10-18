@@ -33,10 +33,12 @@ public class MAIN0 {
         oscFreq.connectConst(0, new FloatConstData(5));
         dest.connect(0, splitter, 0);
 
-        player.start();
+        new Thread(() ->
+            player.start()
+        ).start();
 
         Thread.sleep(5000);
 
-        player.interrupt();
+        player.stop();
     }
 }

@@ -1,15 +1,14 @@
 package me.scidev5.modularProceduralAudioTests.nodes;
 
-import me.scidev5.modularProceduralAudioTests.AudioPlayerThread;
+import me.scidev5.modularProceduralAudioTests.AudioContext;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioData;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatData;
-import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatStereoData;
 
 public class OscillatorNode extends AudioNode {
 
     private float distThroughSample = 0;
 
-    public OscillatorNode(AudioPlayerThread context) {
+    public OscillatorNode(AudioContext context) {
         super(context);
     }
 
@@ -29,13 +28,13 @@ public class OscillatorNode extends AudioNode {
     }
 
     @Override
-    public Class<? extends AudioData>[] getInputTypes() {
-        return new Class[] {FloatData.class};
+    public String[] getInputTypes() {
+        return new String[] { AudioData.FLOAT_ID };
     }
 
     @Override
-    public Class<? extends AudioData>[] getOutputTypes() {
-        return new Class[] { FloatData.class };
+    public String[] getOutputTypes() {
+        return new String[] { AudioData.FLOAT_ID };
     }
 
     @Override
