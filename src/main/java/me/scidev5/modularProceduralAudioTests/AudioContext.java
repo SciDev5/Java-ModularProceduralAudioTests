@@ -63,13 +63,10 @@ public abstract class AudioContext {
 
         @Override
         public void internalExecute() {
-            FloatStereoData input = (FloatStereoData) inputData[0];
-            if (input == null) return;
-
             final int len = getChunkLength();
             dataL = new float[len];
             dataR = new float[len];
-            input.getData(dataL, dataR);
+            getStereoFloatData(0, dataL, dataR);
         }
     }
 }

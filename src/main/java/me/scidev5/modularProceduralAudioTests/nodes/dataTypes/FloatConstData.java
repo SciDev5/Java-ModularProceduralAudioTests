@@ -6,7 +6,6 @@ public class FloatConstData extends FloatData {
     private final float value;
 
     public FloatConstData(float value) {
-        super(1);
         this.value = value;
     }
 

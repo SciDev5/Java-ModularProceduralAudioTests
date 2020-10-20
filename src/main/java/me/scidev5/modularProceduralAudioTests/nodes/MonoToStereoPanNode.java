@@ -5,9 +5,9 @@ import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioData;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatData;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatStereoData;
 
-public class StereoSplitterNode extends AudioNode {
+public class MonoToStereoPanNode extends AudioNode {
 
-    public StereoSplitterNode(AudioContext context) {
+    public MonoToStereoPanNode(AudioContext context) {
         super(context);
     }
 
@@ -38,17 +38,14 @@ public class StereoSplitterNode extends AudioNode {
 
     @Override
     public void createOutputs() {
-        outputData[0] = new FloatStereoData(context.getChunkLength());
+        outputData[0] = new FloatStereoData();
     }
 
     @Override
     protected void internalExecute() {
         int len = context.getChunkLength();
-        FloatStereoData output_ = (FloatStereoData) outputData[0];
-        FloatData input_ = (FloatData) inputData[0];
-        FloatData panning_ = (FloatData) inputData[1];
-        float[] input = input_.getData(new float[len]);
-        float[] panning = panning_.getData(new float[len]);
+        float[] input = getFloatData(0,len);
+        float[] panning = getFloatData(1,len);
         float[] outputL = new float[len];
         float[] outputR = new float[len];
 
@@ -61,6 +58,6 @@ public class StereoSplitterNode extends AudioNode {
             outputR[i] = sqrt2over2 * input[i] * (cos + sin);
         }
 
-        output_.setData(outputL,outputR);
+        setStereoFloatData(0,outputL,outputR);
     }
 }

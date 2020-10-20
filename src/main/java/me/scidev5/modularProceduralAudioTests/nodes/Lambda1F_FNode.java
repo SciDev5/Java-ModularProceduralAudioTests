@@ -4,27 +4,30 @@ import me.scidev5.modularProceduralAudioTests.AudioContext;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioData;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatData;
 
-public class OscillatorNode extends AudioNode {
+public class Lambda1F_FNode extends AudioNode {
 
-    private float distThroughSample = 0;
+    Function1f_f lambda;
 
-    public OscillatorNode(AudioContext context) {
+    @FunctionalInterface public interface Function1f_f { float eval(float a); }
+
+    public Lambda1F_FNode(AudioContext context, Function1f_f lambda) {
         super(context);
+        this.lambda = lambda;
     }
 
     @Override
     public String getName() {
-        return "Oscillator";
+        return "Lambda Node";
     }
 
     @Override
     public String[] getInputNames() {
-        return new String[] {"Frequency"};
+        return new String[] { "Input (float)" };
     }
 
     @Override
     public String[] getOutputNames() {
-        return new String[] {"Oscillation"};
+        return new String[] { "Output (float)" };
     }
 
     @Override
@@ -45,19 +48,12 @@ public class OscillatorNode extends AudioNode {
     @Override
     protected void internalExecute() {
         int len = context.getChunkLength();
-        float[] freq = getFloatData(0,len);
+        float[] in = getFloatData(0,len);
         float[] out = new float[len];
 
-        for (int i = 0; i < len; i++) {
-            out[i] = distThroughSample * 2 - 1;
-            distThroughSample = (distThroughSample + freq[i] / context.getSampleRate()) % 1;
-        }
+        for (int i = 0; i < len; i++)
+            out[i] = lambda.eval(in[i]);
 
         setFloatData(0,out);
-    }
-
-    @Override
-    protected void resetInternal(int sampleNumber) {
-        distThroughSample = 0f;
     }
 }

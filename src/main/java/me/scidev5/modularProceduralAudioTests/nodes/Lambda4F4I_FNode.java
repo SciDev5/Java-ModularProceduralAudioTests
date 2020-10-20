@@ -3,15 +3,14 @@ package me.scidev5.modularProceduralAudioTests.nodes;
 import me.scidev5.modularProceduralAudioTests.AudioContext;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioData;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatData;
-import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.IntData;
 
-public class LambdaNode extends AudioNode {
+public class Lambda4F4I_FNode extends AudioNode {
 
-    Function4f4i_f lambda = null;
+    Function4f4i_f lambda;
 
     @FunctionalInterface public interface Function4f4i_f { float eval(float a, float b, float c, float d, int e, int f, int g, int h); }
 
-    public LambdaNode(AudioContext context, Function4f4i_f lambda) {
+    public Lambda4F4I_FNode(AudioContext context, Function4f4i_f lambda) {
         super(context);
         this.lambda = lambda;
     }
@@ -43,25 +42,25 @@ public class LambdaNode extends AudioNode {
 
     @Override
     public void createOutputs() {
-        outputData[0] = new FloatData(context.getChunkLength());
+        outputData[0] = new FloatData();
     }
 
     @Override
     protected void internalExecute() {
         int len = context.getChunkLength();
-        float[] a = new float[len]; if (inputData[0] != null) ((FloatData)inputData[0]).getData(a);
-        float[] b = new float[len]; if (inputData[1] != null) ((FloatData)inputData[1]).getData(b);
-        float[] c = new float[len]; if (inputData[2] != null) ((FloatData)inputData[2]).getData(c);
-        float[] d = new float[len]; if (inputData[3] != null) ((FloatData)inputData[3]).getData(d);
-        int[] e = new int[len]; if (inputData[4] != null) ((IntData)inputData[4]).getData(e);
-        int[] f = new int[len]; if (inputData[5] != null) ((IntData)inputData[5]).getData(f);
-        int[] g = new int[len]; if (inputData[6] != null) ((IntData)inputData[6]).getData(g);
-        int[] h = new int[len]; if (inputData[7] != null) ((IntData)inputData[7]).getData(h);
+        float[] a = getFloatData(0,len);
+        float[] b = getFloatData(1,len);
+        float[] c = getFloatData(2,len);
+        float[] d = getFloatData(3,len);
+        int[] e = getIntData(4,len);
+        int[] f = getIntData(5,len);
+        int[] g = getIntData(6,len);
+        int[] h = getIntData(7,len);
         float[] out = new float[len];
 
         for (int i = 0; i < len; i++)
             out[i] = lambda.eval(a[i],b[i],c[i],d[i],e[i],f[i],g[i],h[i]);
 
-        ((FloatData)outputData[0]).setData(out);
+        setFloatData(0,out);
     }
 }

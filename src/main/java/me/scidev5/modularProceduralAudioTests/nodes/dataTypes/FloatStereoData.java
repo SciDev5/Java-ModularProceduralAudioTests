@@ -4,10 +4,6 @@ public class FloatStereoData extends AudioData {
     private float[] dataL = null;
     private float[] dataR = null;
 
-    public FloatStereoData(int length) {
-        super(length);
-    }
-
     @Override
     protected void updateDataLength(int length) {
         dataL = new float[length];

@@ -6,11 +6,7 @@ public abstract class AudioData {
     public static final String INT_ID = "int";
     public static final String FLOAT_STEREO_ID = "float-s";
 
-    private int length;
-    protected AudioData(int length) {
-        if (length <= 0) throw new IllegalArgumentException("Length must be greater than 0.");
-        this.setLength(length);
-    }
+    private int length = 0;
 
     /**
      * Set the length of the AudioData. (Clears the data)

@@ -3,10 +3,6 @@ package me.scidev5.modularProceduralAudioTests.nodes.dataTypes;
 public class FloatData extends AudioData {
     private float[] data = null;
 
-    public FloatData(int length) {
-        super(length);
-    }
-
     @Override
     protected void updateDataLength(int length) {
         data = new float[length];

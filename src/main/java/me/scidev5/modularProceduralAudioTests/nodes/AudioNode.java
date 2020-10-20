@@ -3,6 +3,9 @@ package me.scidev5.modularProceduralAudioTests.nodes;
 import me.scidev5.modularProceduralAudioTests.AudioContext;
 import me.scidev5.modularProceduralAudioTests.AudioPlayerThread;
 import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.AudioData;
+import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatData;
+import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.FloatStereoData;
+import me.scidev5.modularProceduralAudioTests.nodes.dataTypes.IntData;
 
 public abstract class AudioNode {
 
@@ -94,5 +97,36 @@ public abstract class AudioNode {
     protected AudioNode(AudioContext context) {
         this.context = context;
         createOutputs();
+    }
+
+    protected final float[] getFloatData(int i) {
+        return getFloatData(i,context.getChunkLength());
+    }
+    protected final float[] getFloatData(int i, int len) {
+        float[] dataIn = new float[len];
+        if (inputData[i] != null) ((FloatData) inputData[i]).getData(dataIn);
+        return dataIn;
+    }
+    protected final void setFloatData(int i, float[] data) {
+        ((FloatData)outputData[i]).setData(data);
+    }
+
+    protected final void getStereoFloatData(int i, float[] dataL, float[] dataR) {
+        if (inputData[i] != null) ((FloatStereoData) inputData[i]).getData(dataL,dataR);
+    }
+    protected final void setStereoFloatData(int i, float[] dataL, float[] dataR) {
+        ((FloatStereoData)outputData[i]).setData(dataL,dataR);
+    }
+
+    protected final int[] getIntData(int i) {
+        return getIntData(i,context.getChunkLength());
+    }
+    protected final int[] getIntData(int i, int len) {
+        int[] dataIn = new int[len];
+        if (inputData[i] != null) ((IntData) inputData[i]).getData(dataIn);
+        return dataIn;
+    }
+    protected final void setIntData(int i, int[] data) {
+        ((IntData)outputData[i]).setData(data);
     }
 }
